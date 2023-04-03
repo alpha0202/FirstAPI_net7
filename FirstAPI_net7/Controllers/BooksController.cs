@@ -7,7 +7,7 @@ namespace FirstAPI_net7.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class BooksController: Controller
+    public class BooksController : Controller
     {
 
         private readonly BooksDb _context;
@@ -18,7 +18,6 @@ namespace FirstAPI_net7.Controllers
         }
 
         //get: api/books
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
         {
@@ -37,7 +36,7 @@ namespace FirstAPI_net7.Controllers
                return NotFound();
                 
             
-            return Ok(book);
+            return book;
         }
 
 
@@ -62,19 +61,17 @@ namespace FirstAPI_net7.Controllers
         public async Task<IActionResult> PutBook(int id, Book book)
         {
             if (id != book.Id)
-            {
-                return BadRequest();
-
-
-            }
+               return BadRequest();
+        
              
             var bookInDb = await _context.Books.FindAsync(id);
 
             if (bookInDb == null)
-            {
                 return NotFound();
 
-            }
+            bookInDb.Title = book.Title;
+            bookInDb.Author = book.Author;
+            bookInDb.IsAvailable = book.IsAvailable;    
 
             _context.Entry(book).State = EntityState.Modified;
 
@@ -84,7 +81,7 @@ namespace FirstAPI_net7.Controllers
         }
 
         //delete: api/books/2
-        [HttpDelete("{id]")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<Book>> DeleteBook(int id)
         {
 
@@ -96,7 +93,7 @@ namespace FirstAPI_net7.Controllers
             _context.Books.Remove(bookToDel);
             await _context.SaveChangesAsync();
 
-            return Ok(bookToDel);
+            return bookToDel;
 
         }
 

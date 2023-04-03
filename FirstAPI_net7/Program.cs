@@ -1,4 +1,3 @@
-
 using FirstAPI_net7.Data;
 using Microsoft.EntityFrameworkCore;
 
