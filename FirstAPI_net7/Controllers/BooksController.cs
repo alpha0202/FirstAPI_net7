@@ -73,7 +73,7 @@ namespace FirstAPI_net7.Controllers
             bookInDb.Author = book.Author;
             bookInDb.IsAvailable = book.IsAvailable;    
 
-            _context.Entry(book).State = EntityState.Modified;
+            //_context.Entry(book).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
             return NoContent();
