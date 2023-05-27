@@ -1,7 +1,6 @@
 ﻿using FirstAPI_net7.Data;
 using FirstAPI_net7.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FirstAPI_net7.Controllers
 {
@@ -10,11 +9,11 @@ namespace FirstAPI_net7.Controllers
     public class BooksController : Controller
     {
 
-        private readonly BooksDb _context;
+        private readonly IBookRepository _repository;
 
-        public BooksController(BooksDb context)
+        public BooksController(IBookRepository repository)
         {
-            _context = context;
+            _repository = repository;
         }
 
         //get: api/books
@@ -22,7 +21,8 @@ namespace FirstAPI_net7.Controllers
         public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
         {
 
-            return await _context.Books.ToListAsync();
+            //return await _context.Books.ToListAsync();
+            return Ok( await _repository.GetAll());
         }
 
 
@@ -31,7 +31,7 @@ namespace FirstAPI_net7.Controllers
         public async Task<ActionResult<Book>> GetBookById(int id)
         {
                 
-            var book = await _context.Books.FindAsync(id);  
+            var book = await _repository.GetBookById(id);  
             if (book == null) 
                return NotFound();
                 
@@ -46,9 +46,9 @@ namespace FirstAPI_net7.Controllers
         public async Task<ActionResult<Book>> PostBook(Book book)
         {
 
-            _context.Books.Add(book);
+            //_context.Books.Add(book);
 
-            await _context.SaveChangesAsync();
+            await _repository.Insert(book);
 
             return CreatedAtAction("GetBookById", new { id = book.Id }, book);
 
@@ -64,18 +64,18 @@ namespace FirstAPI_net7.Controllers
                return BadRequest();
         
              
-            var bookInDb = await _context.Books.FindAsync(id);
+            var bookInDb = await _repository.GetBookById(id);
 
             if (bookInDb == null)
                 return NotFound();
 
-            bookInDb.Title = book.Title;
-            bookInDb.Author = book.Author;
-            bookInDb.IsAvailable = book.IsAvailable;    
+            //bookInDb.Title = book.Title;
+            //bookInDb.Author = book.Author;
+            //bookInDb.IsAvailable = book.IsAvailable;    
 
             //_context.Entry(book).State = EntityState.Modified;
 
-            await _context.SaveChangesAsync();
+            await _repository.Update(book);
             return NoContent();
 
         }
@@ -85,13 +85,13 @@ namespace FirstAPI_net7.Controllers
         public async Task<ActionResult<Book>> DeleteBook(int id)
         {
 
-            var bookToDel = await _context.Books.FindAsync(id);
+            var bookToDel = await _repository.GetBookById(id);
 
             if (bookToDel == null)
                 return NotFound();
 
-            _context.Books.Remove(bookToDel);
-            await _context.SaveChangesAsync();
+           // _context.Books.Remove(bookToDel);
+            await _repository.Delete(id);
 
             return bookToDel;
 

@@ -1,5 +1,6 @@
 using FirstAPI_net7.Data;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace FirstAPI_net7
 {
@@ -12,7 +13,15 @@ namespace FirstAPI_net7
             // Add services to the container.
 
             builder.Services.AddControllers();
-            builder.Services.AddDbContext<BooksDb>(opt => opt.UseInMemoryDatabase("BookList"));
+            var connString = builder.Configuration.GetConnectionString("conexionPredeterminada");
+            builder.Services.AddSingleton<IDbConnection>((sp) => new SqlConnection(connString));
+
+
+            builder.Services.AddScoped<IBookRepository, BookRepository>(); //inyectando nuestas propias dependencias 
+
+
+            //builder.Services.AddDbContext<BooksDb>(opt => opt.UseInMemoryDatabase("BookList")); //conexión db en memoria
+
             
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
