@@ -48,14 +48,29 @@ namespace FirstAPI_net7.Data
             return await _dbConnection.QueryFirstOrDefaultAsync<Book>(sql, new { Id = id });
         }
 
+        //public async Task Insert(Book book)
+        //{
+
+        //    var sql = @"INSERT INTO Books(Id, Titulo, Author,IsAvailable)
+        //                            values(@Id,@Title;@Author,@IsAvailable)";
+
+        //    await _dbConnection.ExecuteAsync(sql,
+        //        new
+        //        {
+        //            book.Id,
+        //            book.Title,
+        //            book.Author,
+        //            book.IsAvailable
+        //        });
+        //}
+
         public async Task Insert(Book book)
         {
+            var sql = @" INSERT INTO Books (Id, Titulo, Author, IsAvailable) 
+                         VALUES(@Id, @Title, @Author, @IsAvailable) ";
 
-            var sql = @"INSERT INTO Books(Id, Titulo, Author,IsAvailable)
-                                    values(@Id,@Title;@Author,@IsAvailable)
-                        ";
-
-            await _dbConnection.ExecuteAsync(sql, new
+            await _dbConnection.ExecuteAsync(sql,
+            new
             {
                 book.Id,
                 book.Title,
@@ -63,6 +78,10 @@ namespace FirstAPI_net7.Data
                 book.IsAvailable
             });
         }
+
+
+
+
 
         public async Task Update(Book book)
         {
